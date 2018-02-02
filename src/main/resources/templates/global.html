@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"/>
+    <title>轮胎健康云</title>
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="/css/common.css" rel="stylesheet"/>
+    <link href="/css/tire_style.css" rel="stylesheet"/>
+
+</head>
+<body>
+
+<nav class="navbar-fixed-top header_sth">
+
+    <div class="container con">
+
+        <p class="main_header">Yokogoodstone<span style="font-size: 35px; font-family: 'Arial'; color: #ccc;"><sup>®</sup>&nbsp;</span>轮胎<span style="color:#2eeb99;">健康云</span></p>
+
+    </div>
+</nav>
+
+<div class="container main_content">
+
+    <div class="row">
+        <div class="col-xs-12 col-md-8 map_con">
+
+            <div class="row">
+
+                <div class="col-md-12 sub_header">
+
+                    <img src="/imgs/dtdw.png"/><p>实时轮胎状态</p>
+
+                </div >
+
+                <div id="mapContainer" class="col-xs-12 col-md-11 map_frame">
+
+
+
+                </div>
+
+                <div class="col-xs-12 col-md-1 " style="height: 20px;">
+
+
+
+                </div>
+
+            </div>
+
+        </div>
+        <div class="col-xs-12 col-md-4 chart_con">
+
+            <div class="row">
+
+                <div class="col-md-12 sub_header">
+
+                    <img src="/imgs/num.png"/><p>服务数量</p>
+
+                </div >
+
+                <div class="col-md-12 div_svrnum">
+
+                    <p class="p_svrnum" th:text="${serverCount}">0</p>
+
+                </div >
+
+                <div class="col-md-12 sub_header">
+
+                    <img src="/imgs/health.png"/><p>轮胎健康分布</p>
+
+                </div >
+
+                <div id="pieChartContainer" class="col-md-12 pie_frame">
+
+
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="container footer_sth">
+
+    <div class="row">
+
+        <div class="col-xs-12 col-md-12">
+
+            <p class="text-center ">Copyright&nbsp;2017&nbsp;集能芯成科技(北京)有限公司&nbsp;版权所有&nbsp;京ICP备00000000号</p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!--bootstrap-->
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"/>
+<script src="/bootstrap/js/bootstrap.min.js"/>
+<!---->
+
+<!--amap-->
+<script type="text/javascript" src="http://webapi.amap.com/maps?v=1.4.3&amp;key=60361c1fb89b5024c7d217277c4273e8" />
+<!---->
+
+<!--eCharts-->
+<script type="text/javascript"  src="/echarts/echarts.min.js" />
+<!---->
+
+<script th:inline="javascript">
+
+    var mIntervId;
+    var markers = [];
+    var dataTime = getDateStr(new Date().getTime());//(1516967400000);
+    var timeConver = dataTime.replace(/-/g, '/');
+    var mEpscSencond = Date.parse(timeConver) / 1000;
+
+    initAmap();
+
+    function initAmap(){
+
+        var map = new AMap.Map('mapContainer', {
+            resizeEnable: true,
+            zoom: 10,
+            center: [116.397131,39.908808],
+            mapStyle: 'amap://styles/blue'
+        });
+
+        map.plugin(["AMap.ToolBar"], function() {
+            map.addControl(new AMap.ToolBar());
+        });
+
+        preDrawPoints(map);
+
+        pieChart();
+
+    }
+
+    function preDrawPoints(amap) {
+
+        $.ajax({
+            type: "get",
+            url: "/charts/ajaxPreGPSLocation",
+            dataType: "json",
+            async: true,
+            data: {
+
+            },
+            success: function (result) {
+
+                drawPoinsts(result, amap);
+
+                mIntervId = setInterval(function() {
+
+
+                    updateGPSPoints(mEpscSencond ,amap);
+
+                    mEpscSencond ++;
+
+                }, 1000);
+
+            }
+        });
+
+    }
+
+    function updateGPSPoints(epscSencond, amap) {
+
+        $.ajax({
+            type : "get",
+            url : "/charts/ajaxGPSLocation",
+            dataType : "json",
+            async : true,
+            data : {
+                "tmsp" : epscSencond
+            },
+            success : function(result) {
+
+                drawPoinsts(result, amap);
+
+            }
+
+        });
+
+    }
+
+    function drawPoinsts(result, amap) {
+
+        var arr = result;
+
+        if(arr.length == 0) return;
+
+        /*<![CDATA[*/
+
+        if(markers.length != 0) {
+            amap.remove(markers);
+            markers.length = 0;
+        }
+
+        for(var i = 0; i < arr.length; i ++) {
+
+            const boxId = arr[i].boxId;
+            const longitude = arr[i].longitude;
+            const latitude = arr[i].latitude;
+
+            var marker = new AMap.CircleMarker({
+                map:amap,
+                center:[longitude, latitude],
+                radius:10,
+                strokeColor:'white',
+                strokeWeight:0,
+                strokeOpacity:0.0,
+                fillColor:'#6dc579',
+                fillOpacity:0.8,
+                zIndex:10,
+                bubble:true,
+                cursor:'pointer',
+                clickable: true
+            });
+
+            marker.on('click', function() {
+                toBoxDetailPage(boxId, longitude, latitude);
+            });
+
+            markers.push(marker);
+
+        }
+        /*]]>*/
+
+    }
+
+    function toBoxDetailPage(boxId, longitude, latitude) {
+
+        //window.location.href = "/charts/details?box=" + boxId;
+        /*<![CDATA[*/window.open("/charts/details?id=" + boxId + "&lg=" + longitude + "&la=" +latitude);/*]]>*/
+
+    }
+
+    function pieChart() {
+
+        var myPieChart = echarts.init(document.getElementById('pieChartContainer'));
+
+        option = {
+            backgroundColor : '#022431',
+
+            title : {
+                text : '',
+                left : 'center',
+                top : 20,
+                textStyle : {
+                    color : '#ccc'
+                }
+            },
+
+            tooltip : {
+                trigger : 'item',
+                formatter : "{a} <br/>{b} : {c} ({d}%)"
+            },
+
+            // visualMap: {
+            //     show: false,
+            //     min: 1,
+            //     max: 20000,
+            //     inRange: {
+            //         colorLightness: [0, 1]
+            //     }
+            // },
+            series : [
+                {
+                    name : '健康分布',
+                    type : 'pie',
+                    radius : '55%',
+                    center : [ '45%', '35%' ],
+                    data : [
+                        {
+                            value : 13523,
+                            name : '健康\n13,523',
+                            itemStyle : {
+                                normal : {
+                                    color : '#01b3ae'
+                                }
+                            }
+                        },
+                        {
+                            value : 11223,
+                            name : '90天内需更换\n11,223',
+                            itemStyle : {
+                                normal : {
+                                    color : '#ebbe47'
+                                }
+                            }
+                        },
+                        {
+                            value : 4454,
+                            name : '30天内需更换\n4,544',
+                            itemStyle : {
+                                normal : {
+                                    color : '#e54143'
+                                }
+                            }
+                        }
+                    ].sort(function(a, b) {
+                        return a.value - b.value;
+                    }),
+                    roseType : 'radius',
+                    label : {
+                        normal : {
+                            fontSize : 14,
+                            textStyle : {
+                                color : 'rgba(255, 255, 255, 0.8)'
+                            }
+                        }
+                    },
+                    labelLine : {
+                        normal : {
+                            lineStyle : {
+                                color : 'rgba(255, 255, 255, 1)'
+                            },
+                            smooth : 0.03,
+                            length : 10,
+                            length2 : 20
+                        }
+                    },
+                    itemStyle : {
+                        normal : {
+                            color : '#c23531',
+                            shadowBlur : 100,
+                            shadowColor : 'rgba(0, 0, 0, 0.8)'
+                        }
+                    },
+
+                    animationType : 'scale',
+                    animationEasing : 'elasticOut',
+                    animationDelay : function(idx) {
+                        return Math.random() * 200;
+                    }
+                }
+            ]
+        };
+
+        myPieChart.setOption(option);
+    }
+
+    /*<![CDATA[*/
+    function getDateStr(timeStamp) {
+
+        var d = new Date(timeStamp);
+
+        var year = d.getFullYear();
+        var month = d.getMonth() + 1;
+        var day = d.getDate();
+        var h = d.getHours();
+        var m = d.getMinutes();
+        var s = d.getSeconds();
+
+        var monthStr = month < 10 ? "0" + month : "" + month;
+        var dayStr = day < 10 ? "0" + day : "" + day;
+        var hStr = h < 10 ? "0" + h : "" + h;
+        var mStr = m < 10 ? "0" + m : "" + m;
+        var sStr = s < 10 ? "0" + s : "" + s;
+
+        var timeStr = year + "-" + monthStr + "-" + dayStr + " " + hStr + ":" + mStr + ":" + sStr;
+
+        return timeStr;
+
+    }
+    /*]]>*/
+
+</script>
+
+</body>
+</html>

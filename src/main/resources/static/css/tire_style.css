@@ -1,0 +1,117 @@
+@CHARSET "UTF-8";
+
+body {
+
+    background-color: #022431;
+
+}
+
+.main_header {
+
+    height: 150px;
+    line-height: 150px;
+    font-size: 40px;
+    font-family: "Microsoft YaHei UI";
+    font-weight: 300;
+    color: white;
+    text-align: center;
+
+}
+
+.header_sth {
+
+    background-color: white;
+    height: 150px;
+    background-color: #022431;
+
+}
+
+.main_content {
+
+    position: relative;
+    top: 220px;
+    width: 90%;
+
+}
+
+.map_con {
+
+    height: 100%;
+
+}
+
+.chart_con {
+
+    height: 100%;
+
+}
+
+.map_frame {
+
+    height: 500px;
+
+}
+
+.pie_frame {
+
+    width:100%;
+    height: 500px;
+
+}
+
+.div_svrnum {
+
+    height: 110px;
+
+}
+
+.p_svrnum {
+
+    position:absolute;
+    height: 60px;
+    margin-top: 9px;
+    margin-left: 30px;
+    line-height: 60px;
+    font-size: 40px;
+    font-family: "Microsoft YaHei UI";
+    color: white;
+
+}
+
+.chart_con_t {
+
+    height: 55px;
+
+}
+
+.footer_sth {
+
+    position: relative;
+    margin-bottom: 0px;
+    margin-top: 220px;
+    bottom: 0px;
+    height: 30px;
+    width: 100%;
+    bottom: 0px;
+    background-color: #022431;
+
+}
+
+.footer_sth p {
+
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    font-size: 12px;
+    font-family: "Microsoft YaHei UI";
+    color: rgba(255, 255, 255, 0.2);
+
+}
+
+.header_sth div.con, .footer_sth div.con {
+
+    width: 90%;
+    height: 100%;
+
+}
+

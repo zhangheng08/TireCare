@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"/>
+    <title>轮胎数据</title>
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="/css/common.css" rel="stylesheet"/>
+    <link href="/css/detail_style.css" rel="stylesheet"/>
+</head>
+<body>
+
+
+<div class="container container_d">
+
+    <div class="row row_d">
+
+        <div class="col-xs-12 col-md-2 top_l_gap"></div>
+
+        <div class="col-xs-12 col-md-2 top_l row_d_brd">
+
+            <div class="im">
+
+                <img class="car" src="/imgs/qc.png"/>
+                <img id="lf" class="wheel wheel-left-front" src="/imgs/lz.png" onclick="javascript:onWheelsClick('lf')"/>
+                <img id="rf" class="wheel wheel-right-front" src="/imgs/lz_dis.png" onclick="javascript:onWheelsClick('rf')"/>
+                <img id="lb" class="wheel wheel-left-back" src="/imgs/lz_dis.png" onclick="javascript:onWheelsClick('lb')"/>
+                <img id="rb" class="wheel wheel-right-back" src="/imgs/lz_dis.png" onclick="javascript:onWheelsClick('rb')"/>
+
+            </div>
+
+        </div>
+
+        <div class="col-xs-12 col-md-2 top_l row_d_brd">
+
+            <div class="info">
+
+                <div class="sub_header sh">
+
+                    <img src="/imgs/speed.png"/><p>当前 车速</p>
+
+                </div >
+
+                <p id="speedP" class="sub_content">
+                    0<span style="font-size: 13px;">&nbsp;&nbsp;&nbsp;km/h</span>
+                </p>
+
+                <div class="sub_header sh lt">
+
+                    <img src="/imgs/rd.png"/><p>当前 路面</p>
+
+                </div >
+
+                <p class="sub_content road_txt">
+                    沥青<span style="font-size: 13px;">&nbsp;&nbsp;&nbsp;</span>
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="col-xs-12 col-md-4 top_r row_d_brd">
+
+            <div id="locationCon" class="mapCon">
+
+            </div>
+
+        </div>
+
+        <div class="col-xs-12 col-md-2 top_r_gap"></div>
+
+    </div>
+
+    <!--###############################################################################################################-->
+
+    <div class="row row_mt tab">
+
+        <div class="col-xs-12 col-md-2"></div>
+
+        <!--<div class="col-xs-12 col-md-8 col-lg-8 tab">
+
+
+
+        </div>-->
+
+        <div id="wheelNameCon" class="col-xs-12 col-md-2 tabItem">
+
+            <img src="/imgs/lt.png"/><p class="l">左前</p>
+
+        </div>
+        <div id="lifeTab" class="col-xs-12 col-md-2 tabItem">
+
+            <p id="lifeTab-p" class="n nbgd" onclick="javascript:switchTab('lifeTab-p', 'pieChartsCon')">轮胎寿命</p>
+
+        </div>
+        <div id="roadTab" class="col-xs-12 col-md-2 tabItem" >
+
+            <p id="roadTab-p" class="n nbgd" onclick="javascript:switchTab('roadTab-p', 'rectChartsCon')">路面信息</p>
+
+        </div>
+        <div id="timeLineTab" class="col-xs-12 col-md-2 tabItem">
+
+            <p id="timeLineTab-p" class="n nbgu" onclick="javascript:switchTab('timeLineTab-p', 'lineChartsCon')">实时监控</p>
+
+        </div>
+
+        <div class="col-xs-12 col-md-2"></div>
+
+    </div>
+
+    <!--###############################################################################################################-->
+
+    <div class="row row_mt">
+
+        <div class="col-xs-12 col-md-2 col-lg-2"></div>
+
+        <div class="col-xs-12 col-md-8 col-lg-8 all_charts">
+
+            <div id="lineChartsCon" class="row row_mt line_charts" style="margin-top: 0px;">
+
+                <div id="s-p" class="col-md-12 chart_h"></div>
+
+                <div id="s-t" class="col-md-12 chart_h"></div>
+
+                <div id="s-a" class="col-md-12 chart_h"></div>
+
+            </div>
+
+            <div id="pieChartsCon" class="row row_mt pie_charts" style="margin-top: 0px">
+
+                <div id="liveCon" class="col-md-6 lh">
+
+
+
+                </div>
+
+                <div id="healthCon" class="col-md-6 lh">
+
+
+
+                </div>
+
+            </div>
+
+            <div id="rectChartsCon" class="row row_mt rect_charts" style="margin-top: 0px">
+
+
+
+            </div>
+
+        </div>
+
+        <div class="col-md-12 col-lg-2"></div>
+
+    </div>
+
+</div>
+
+<!--bootstrap-->
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js" />
+<script src="/bootstrap/js/bootstrap.min.js"/>
+<!---->
+
+<!--amap-->
+<script type="text/javascript" src="http://webapi.amap.com/maps?v=1.4.3&amp;key=60361c1fb89b5024c7d217277c4273e8" />
+<!---->
+
+<!--eCharts-->
+<script type="text/javascript" src="/echarts/echarts.min.js" />
+<!---->
+
+<script type="text/javascript" src="/js/charts.js" />
+
+<script th:inline="javascript">
+
+    var map;
+    initAmap();
+
+    var wheels = [ 'lf', 'rf', 'lb', 'rb' ];
+    var chartCons = ['pieChartsCon', 'rectChartsCon', 'lineChartsCon'];
+    var tabPs = ['lifeTab-p', 'roadTab-p', 'timeLineTab-p'];
+    var wheelsNmCon = document.getElementById('wheelNameCon');
+    var speedLabel = document.getElementById("speedP");
+    var pContainer = echarts.init(document.getElementById('s-p'));
+    var tContainer = echarts.init(document.getElementById('s-t'));
+    var aContainer = echarts.init(document.getElementById('s-a'));
+    var dataTime = getDateStr(new Date().getTime());//(1516967400000);//(new Date().getTime());
+    var timeConver = dataTime.replace(/-/g, '/');
+    var epochSecond = Date.parse(timeConver) / 1000 - 180;
+    var place = 0;
+    var boxId = /*[[${boxId}]]*/-1;
+    var param = {"amap":map, "boxId":88,"dataTime":dataTime, "epochSecond":epochSecond, "place":0, "pContainer":pContainer, "tContainer":tContainer, "aContainer":aContainer, "sContainer":speedLabel};
+
+    initCharts(param);
+    healthChart(80);
+    kmChart(15060);
+    roadChart();
+
+    function onWheelsClick(tireId) {
+
+        var tire = document.getElementById(tireId);
+
+        if (tire.src.search("/imgs/lz.png") != -1) {
+            return;
+        }
+
+        window.clearInterval(nIntervId);
+
+        var sIndex = 0;
+        var score = 85;
+        var hadMiles = 21540;
+
+        /*<![CDATA[*/
+        for (var i = 0; i < wheels.length; i++) {
+
+            tire = document.getElementById(wheels[i]);
+
+            if (wheels[i] == tireId) {
+                tire.src = '/imgs/lz.png';
+            } else {
+                tire.src = '/imgs/lz_dis.png';
+            }
+
+        }
+        /*]]>*/
+
+        if(tireId == 'lf') {
+
+            wheelsNmCon.innerHTML = '<img src="/imgs/lt.png"/><p class="l">左前</p>';
+            sIndex = 0;
+            score = 85;
+            hadMiles = 21540;
+
+        } else if(tireId == 'rf') {
+
+            wheelsNmCon.innerHTML = '<img src="/imgs/lt.png"/><p class="l">右前</p>';
+            sIndex = 1;
+            score = 90;
+            hadMiles = 5320;
+
+        } else if(tireId == 'lb') {
+
+            wheelsNmCon.innerHTML = '<img src="/imgs/lt.png"/><p class="l">左后</p>';
+            sIndex = 2;
+            score = 80;
+            hadMiles = 27500;
+
+        } else if(tireId == 'rb') {
+
+            wheelsNmCon.innerHTML = '<img src="/imgs/lt.png"/><p class="l">右后</p>';
+            sIndex = 3;
+            score = 95;
+            hadMiles = 2500;
+
+        }
+
+        param.place = sIndex;
+
+        initCharts(param);
+
+    }
+
+    function initAmap() {
+
+        const lg = /*[[${longitude}]]*/0;
+        const la = /*[[${latitude}]]*/0;
+
+        map = new AMap.Map('locationCon', {
+            resizeEnable: true,
+            zoom: 15,
+            center: [lg, la],
+            mapStyle: 'amap://styles/whitesmoke'
+        });
+
+/*        map.plugin(["AMap.ToolBar"], function() {
+            map.addControl(new AMap.ToolBar());
+        });*/
+
+        new AMap.CircleMarker({
+            map:map,
+            center: [lg, la],
+            radius:10,
+            strokeColor:'white',
+            strokeWeight:0,
+            strokeOpacity:0.0,
+            fillColor:'#6dc579',
+            fillOpacity:0.8,
+            zIndex:10,
+            bubble:true,
+            cursor:'pointer',
+            clickable: true
+        });
+
+    }
+
+    function switchTab(tabItem, chartLayer) {
+
+        var p = document.getElementById(tabItem);
+        var layer = document.getElementById(chartLayer);
+
+        /*<![CDATA[*/
+        for(var i = 0; i < tabPs.length; i ++) {
+
+            if(tabItem == tabPs[i]) {
+
+                p.style.backgroundColor = '#d9d9d9';
+                p.style.color = "#022431";
+
+                layer.style.zIndex  = 10;
+                layer.style.visibility = "visible";
+
+            } else {
+
+                document.getElementById(tabPs[i]).style.backgroundColor = "#023c4b";
+                document.getElementById(tabPs[i]).style.color = 'rgba(255, 255, 255, 1)';
+
+                document.getElementById(chartCons[i]).style.zIndex = 9 - i;
+                document.getElementById(chartCons[i]).style.visibility = "hidden";
+
+            }
+
+/*            if(chartLayer == chartCons[i]) {
+
+                layer.style.zIndex  = 10;
+                layer.style.visibility = "visible";
+
+            } else {
+
+                document.getElementById(chartCons[i]).style.zIndex = 9 - i;
+                document.getElementById(chartCons[i]).style.visibility = "hidden";
+
+            }*/
+
+        }
+        /*]]>*/
+
+    }
+
+</script>
+
+</body>
+</html>

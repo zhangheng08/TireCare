@@ -1,0 +1,35 @@
+@CHARSET "UTF-8";
+
+div,img,p,a,ul,li {
+
+    border:0px dashed rgba(205, 200, 80, 0.3);
+    padding:0px;
+    overflow: hidden;
+
+}
+
+.sub_header {
+
+    height: 55px;
+}
+
+.sub_header img {
+    float: left;
+    height: 35px;
+    margin-left: -15px;
+}
+
+.sub_header p {
+
+    float: left;
+    height: 35px;
+    margin-top: -2px;
+    margin-left: 10px;
+    line-height: 35px;
+    font-size: 23px;
+    font-family: "Microsoft YaHei UI";
+    font-weight: 200;
+    color: rgba(255, 255, 255, 0.8);
+    padding: 0px;
+
+}
