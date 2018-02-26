@@ -173,7 +173,7 @@ function drawAccChart(tireMessage, param) {
             formatter : function(params) {
                 params = params[0];
                 var date = new Date(params.name);
-                return params.value[1] + " Pa";
+                return params.value[1] + " m/s²";
             },
             axisPointer : {
                 type: 'line',
@@ -335,7 +335,7 @@ function drawTemperatureChart(tireMessage, param) {
             formatter : function(params) {
                 params = params[0];
                 var date = new Date(params.name);
-                return params.value[1] + " Pa";
+                return params.value[1] + " ℃";
             },
             axisPointer : {
                 type: 'line',
