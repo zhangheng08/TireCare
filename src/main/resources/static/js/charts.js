@@ -18,7 +18,7 @@ function locationUpdate(param) {
         async: true,
         data: {
             "id": param.boxId,
-            "tmsp": param.epochSecond,
+            //"tmsp": param.epochSecond,
         },
         success: function (result) {
 
@@ -114,7 +114,7 @@ function loadTireMessage(param) {
         async: true,
         data: {
             "id": param.boxId,
-            "tp": param.epochSecond,
+            //"tp": param.epochSecond,
             "pl": param.place
         },
         success: function (result) {
@@ -122,7 +122,7 @@ function loadTireMessage(param) {
             drawPressureChart(result, param);
             drawTemperatureChart(result, param);
             drawAccChart(result, param);
-            param.epochSecond ++;
+            // param.epochSecond ++;
 
         },
         error : function(xhr, status, errMsg) {
@@ -140,9 +140,9 @@ function drawAccChart(tireMessage, param) {
     else tireMessage.accelerate = lastAcceler;
 
     var p = {
-        name : param.epochSecond * 1000,
+        name : tireMessage.timestamp * 1000,
         value : [
-            param.epochSecond * 1000,
+            tireMessage.timestamp * 1000,
             tireMessage.accelerate
         ]
     };
@@ -302,9 +302,9 @@ function drawTemperatureChart(tireMessage, param) {
     else tireMessage.temperature = lastTempera;
 
     var p = {
-        name : param.epochSecond * 1000,
+        name : tireMessage.timestamp * 1000,
         value : [
-            param.epochSecond * 1000,
+            tireMessage.timestamp * 1000,
             tireMessage.temperature
         ]
     };
@@ -465,9 +465,9 @@ function drawPressureChart(tireMessage, param) {
     else tireMessage.pressure = presureLast;
 
     var p = {
-        name : param.epochSecond * 1000,
+        name : tireMessage.timestamp * 1000,
         value : [
-            param.epochSecond * 1000,
+            tireMessage.timestamp * 1000,
             tireMessage.pressure
         ]
     };
@@ -542,8 +542,8 @@ function drawPressureChart(tireMessage, param) {
             type : 'value',
             boundaryGap : [ 0, '100%' ],
             minInterval : 0.2,
-            max:103,
-            min:98,
+/*            max:103,
+            min:98,*/
             axisLine : {
                 lineStyle : {
                     type : 'solid',

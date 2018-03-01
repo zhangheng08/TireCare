@@ -1,20 +1,22 @@
 package com.pi2star.tirecare.controller;
 
-import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonArrayFormatVisitor;
 import com.pi2star.tirecare.dao.GPSRepository;
+import com.pi2star.tirecare.dao.MPURepository;
 import com.pi2star.tirecare.dao.TireRepository;
 import com.pi2star.tirecare.entity.GPSMessage;
+import com.pi2star.tirecare.entity.MPUMessage;
 import com.pi2star.tirecare.entity.TireMessage;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONObject;
+import com.pi2star.tirecare.utils.Statices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 @Controller
@@ -26,6 +28,9 @@ public class ChartsController {
 
     @Autowired
     private TireRepository mTireRepository;
+
+    @Autowired
+    private MPURepository mMpuRepository;
 
     @RequestMapping("/test")
     public String showTest(Model model) {
@@ -40,6 +45,8 @@ public class ChartsController {
 
         int count = mGPSRepository.countDistinctByBoxId();
 
+        long timeSec = Statices.getTimeUTC();
+
         model.addAttribute("serverCount", count);
 
         return "global";
@@ -49,15 +56,32 @@ public class ChartsController {
     @GetMapping("/ajaxPreGPSLocation")
     public @ResponseBody ArrayList<GPSMessage> gpsPreFetch() {
 
-        ArrayList<GPSMessage> list = mGPSRepository.findAllByGroup();
+        //ArrayList<GPSMessage> list = mGPSRepository.findAllByGroup();
+
+        ArrayList<GPSMessage> list = new ArrayList<>();
+
+        int[] boxIds = mGPSRepository.findDistinctBoxIds();
+
+        if(boxIds != null) {
+
+            for(int boxId : boxIds) {
+
+                GPSMessage gm = mGPSRepository.findLatestGpsMsg(boxId);
+
+                list.add(gm);
+
+            }
+
+        }
 
         return list;
 
     }
 
     @GetMapping("/ajaxGPSLocation")
-    public @ResponseBody ArrayList<GPSMessage> gpsUpdateFetch(@RequestParam("tmsp")long timestamp) {
+    public @ResponseBody ArrayList<GPSMessage> gpsUpdateFetch() {
 
+        long timestamp = Statices.getTimeUTC() - 180;
 
         ArrayList<GPSMessage> list = mGPSRepository.findByTimestamp(timestamp);
 
@@ -66,7 +90,9 @@ public class ChartsController {
     }
 
     @GetMapping("/ajaxGPSLocationSingle")
-    public @ResponseBody GPSMessage gpsUpdateSingalFetch(@RequestParam("id")int boxId, @RequestParam("tmsp")long timestamp) {
+    public @ResponseBody GPSMessage gpsUpdateSingalFetch(@RequestParam("id")int boxId) {
+
+        long timestamp = Statices.getTimeUTC() - 180;
 
         GPSMessage gpsMessage = mGPSRepository.findByBoxIdAndTimestamp(boxId, timestamp);
 
@@ -83,11 +109,67 @@ public class ChartsController {
 
         }
 
-
-
         return gpsMessage;
 
     }
+
+    @GetMapping("/ajaxOrigin")
+    public @ResponseBody HashMap<String, ArrayList> originFetch() {
+
+        ArrayList<TireMessage> tlist = mTireRepository.findTopTireMessage();
+        ArrayList<GPSMessage> glist = mGPSRepository.findTopGpsMessage();
+        ArrayList<MPUMessage> mlist = mMpuRepository.findTopMpuMessage();
+
+        HashMap<String, ArrayList> map = new HashMap<>();
+
+        map.put("Tire", tlist);
+        map.put("gps", glist);
+        map.put("mpu", mlist);
+
+        return map;
+
+
+    }
+
+    @GetMapping("/Origin")
+    public String showOrigin(Model model, HttpSession session) {
+
+        ArrayList<TireMessage> tlist = mTireRepository.findTopTireMessage();
+        ArrayList<GPSMessage> glist = mGPSRepository.findTopGpsMessage();
+        ArrayList<MPUMessage> mlist = mMpuRepository.findTopMpuMessage();
+
+        HashMap<String, ArrayList> map = new HashMap<>();
+
+        map.put("tire", tlist);
+        map.put("gps", glist);
+        map.put("mpu", mlist);
+
+        model.addAttribute("top100", map);
+
+        Object obj = session.getAttribute("tab");
+
+        int idx = 0;
+
+        if(obj != null) idx = (int) obj;
+
+        model.addAttribute("selectedTab", idx);
+
+        return "Origin";
+
+    }
+
+    @GetMapping("/ajaxSendSelected")
+    public @ResponseBody int saveTagIndex(@RequestParam("index")int index, HttpSession session) {
+
+        session.setAttribute("tab", index);
+
+        int idx = (int) session.getAttribute("tab");
+
+        return idx;
+
+    }
+
+
 
 
 
@@ -116,13 +198,18 @@ public class ChartsController {
     }
 
     @PostMapping("/ajaxTireInfo")
-    public @ResponseBody TireMessage fetchTireMessage(@RequestParam("id")int boxId, @RequestParam("tp")long timestamp, @RequestParam("pl")int place) {
+    public @ResponseBody TireMessage fetchTireMessage(@RequestParam("id")int boxId, @RequestParam("pl")int place) {
+
+        long timestamp = Statices.getTimeUTC() - 180;
 
         System.out.println("query tire info: " + boxId + " -- " + timestamp + "--" + place);
 
         TireMessage tireMessage = mTireRepository.findTireMessageByBoxIdAndTimestampAndPlace(boxId, timestamp, place);
 
-        if(tireMessage == null) tireMessage = new TireMessage();
+        if(tireMessage == null) {
+            tireMessage = new TireMessage();
+            tireMessage.setTimestamp(timestamp);
+        }
 
         System.out.println(tireMessage);
 

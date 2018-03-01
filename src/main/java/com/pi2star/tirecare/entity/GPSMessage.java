@@ -21,7 +21,7 @@ public class GPSMessage {
     //@Column(columnDefinition="FLOAT(9,6)", nullable=true)
     private float longitude;			//经度			                  4B
     private int ewhemi;					//东经西经                         1B
-    private int speed;	                //地面速率                         2B
+    private float speed;	                //地面速率                         2B
     private String utc_time_day;           // UTC_TIME_DAY 时间 day          3B
     private String utc_time_year;          //UTC_TIME_YEAR时间 year          3B
     private long timestamp;
@@ -99,11 +99,11 @@ public class GPSMessage {
         this.utc_time_year = utc_time_year;
     }
 
-    public int getSpeed() {
+    public float getSpeed() {
         return speed;
     }
 
-    public void setSpeed(int speed) {
+    public void setSpeed(float speed) {
         this.speed = speed;
     }
 

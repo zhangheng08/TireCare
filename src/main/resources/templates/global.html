@@ -115,9 +115,9 @@
 
     var mIntervId;
     var markers = [];
-    var dataTime = getDateStr(new Date().getTime());//(1516967400000);
-    var timeConver = dataTime.replace(/-/g, '/');
-    var mEpscSencond = Date.parse(timeConver) / 1000;
+    //var dataTime = getDateStr(new Date().getTime());//(1516967400000);
+    //var timeConver = dataTime.replace(/-/g, '/');
+    //var mEpscSencond = Date.parse(timeConver) / 1000 - (3600 * 8);
 
     initAmap();
 
@@ -157,9 +157,9 @@
                 mIntervId = setInterval(function() {
 
 
-                    updateGPSPoints(mEpscSencond ,amap);
+                    updateGPSPoints(amap);
 
-                    mEpscSencond ++;
+                    // mEpscSencond ++;
 
                 }, 1000);
 
@@ -168,7 +168,7 @@
 
     }
 
-    function updateGPSPoints(epscSencond, amap) {
+    function updateGPSPoints(amap) {
 
         $.ajax({
             type : "get",
@@ -176,7 +176,7 @@
             dataType : "json",
             async : true,
             data : {
-                "tmsp" : epscSencond
+                //"tmsp" : epscSencond
             },
             success : function(result) {
 

@@ -416,6 +416,7 @@ public class CodeProcessor {
 
                     timeStr = time.toString();
                     dateStr = date.toString();
+
                     timeStamp = ldt.toEpochSecond(ZoneOffset.of("+8"));
 
                 } catch (Exception e) {
@@ -433,7 +434,7 @@ public class CodeProcessor {
                 gpsMsg.setEwhemi(ewhemi);
                 gpsMsg.setUtc_time_day(timeStr);
                 gpsMsg.setUtc_time_year(dateStr);
-                gpsMsg.setSpeed(speed);
+                gpsMsg.setSpeed(speed / 1000.0f);
                 gpsMsg.setTimestamp(timeStamp);
 
                 System.out.println(gpsMsg);

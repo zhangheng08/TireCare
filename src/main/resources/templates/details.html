@@ -185,12 +185,12 @@
     var pContainer = echarts.init(document.getElementById('s-p'));
     var tContainer = echarts.init(document.getElementById('s-t'));
     var aContainer = echarts.init(document.getElementById('s-a'));
-    var dataTime = getDateStr(new Date().getTime());//(1516967400000);//(new Date().getTime());
-    var timeConver = dataTime.replace(/-/g, '/');
-    var epochSecond = Date.parse(timeConver) / 1000 - 180;
+/*    var dataTime = getDateStr(new Date().getTime());//(1516967400000);//(new Date().getTime());
+    var timeConver = dataTime.replace(/-/g, '/');*/
+    var epochSecond = 0;//Date.parse(timeConver) / 1000 - 180;
     var place = 0;
     var boxId = /*[[${boxId}]]*/-1;
-    var param = {"amap":map, "boxId":88,"dataTime":dataTime, "epochSecond":epochSecond, "place":0, "pContainer":pContainer, "tContainer":tContainer, "aContainer":aContainer, "sContainer":speedLabel};
+    var param = {"amap":map, "boxId":88,"dataTime":0, "epochSecond":epochSecond, "place":0, "pContainer":pContainer, "tContainer":tContainer, "aContainer":aContainer, "sContainer":speedLabel};
 
     initCharts(param);
     healthChart(80);

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"/>
+    <title>原始数据</title>
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="/css/origin.css" rel="stylesheet"/>
+</head>
+<body>
+
+<div class="contaienr top navbar-fixed-top">
+
+    <div class="row">
+
+        <div class="col-xs-12 col-md-12 navbar">
+
+            <p id="tbtn">tire</p>
+            <p id="gbtn">gps</p>
+            <p id="mbtn">mpu</p>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-xs-12 col-md-12">
+
+                <div class="db-col-topbar" id="tireColBar">
+
+                    <div class="db-col"><p>_id</p></div>
+                    <div class="db-col"><p>accelerate</p></div>
+                    <div class="db-col"><p>box_id</p></div>
+                    <div class="db-col"><p>characteristic</p></div>
+                    <div class="db-col"><p>idh</p></div>
+                    <div class="db-col"><p>idl</p></div>
+                    <div class="db-col"><p>place</p></div>
+                    <div class="db-col"><p>pressure</p></div>
+                    <div class="db-col"><p>temperature</p></div>
+                    <div class="db-col"><p>timestamp</p></div>
+                    <div class="db-col"><p>utc_time_day</p></div>
+                    <div class="db-col"><p>utc_time_year</p></div>
+                    <div class="db-col"><p>voltage</p></div>
+
+                </div>
+
+                <div class="db-col-topbar" id="gpsColBar">
+
+                    <div class="db-col"><p>_id</p></div>
+                    <div class="db-col"><p>box_id</p></div>
+                    <div class="db-col"><p>characteristic</p></div>
+                    <div class="db-col"><p>ewhemi</p></div>
+                    <div class="db-col"><p>gpssta</p></div>
+                    <div class="db-col"><p>latitude</p></div>
+                    <div class="db-col"><p>longitde</p></div>
+                    <div class="db-col"><p>nshemi</p></div>
+                    <div class="db-col"><p>speed</p></div>
+                    <div class="db-col"><p>utc_time_day</p></div>
+                    <div class="db-col"><p>utc_time_year</p></div>
+                    <div class="db-col"><p>timestamp</p></div>
+
+                </div>
+
+                <div class="db-col-topbar" id="mpuColBar">
+
+                    <div class="db-col"><p>_id</p></div>
+                    <div class="db-col"><p>acx</p></div>
+                    <div class="db-col"><p>acy</p></div>
+                    <div class="db-col"><p>acz</p></div>
+                    <div class="db-col"><p>box_id</p></div>
+                    <div class="db-col"><p>characteristic</p></div>
+                    <div class="db-col"><p>gyx</p></div>
+                    <div class="db-col"><p>gyy</p></div>
+                    <div class="db-col"><p>gyz</p></div>
+                    <div class="db-col"><p>utc_time_day</p></div>
+                    <div class="db-col"><p>utc_time_year</p></div>
+                    <div class="db-col"><p>timestamp</p></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="content">
+
+    <div class="inner" id="tireGrid">
+
+        <div class="inner-content" th:each="tire:${top100.get('tire')}">
+
+            <div class="db-val"><p th:text="${tire._id}">_id</p></div>
+            <div class="db-val"><p th:text="${tire.accelerate}">accelerate</p></div>
+            <div class="db-val"><p th:text="${tire.boxId}">box_id</p></div>
+            <div class="db-val"><p th:text="${tire.characteristic}">characteristic</p></div>
+            <div class="db-val"><p th:text="${tire.idh}">idh</p></div>
+            <div class="db-val"><p th:text="${tire.idl}">idl</p></div>
+            <div class="db-val"><p th:text="${tire.place}">place</p></div>
+            <div class="db-val"><p th:text="${tire.pressure}">pressure</p></div>
+            <div class="db-val"><p th:text="${tire.temperature}">temperature</p></div>
+            <div class="db-val"><p th:text="${tire.timestamp}">timestamp</p></div>
+            <div class="db-val"><p th:text="${tire.utc_time_day}">utc_time_day</p></div>
+            <div class="db-val"><p th:text="${tire.utc_time_year}">utc_time_year</p></div>
+            <div class="db-val"><p th:text="${tire.voltage}">voltage</p></div>
+
+        </div>
+
+    </div>
+
+   <div class="inner" id="gpsGrid" hidden="hidden">
+
+        <div class="inner-content" th:each="gps:${top100.get('gps')}">
+
+            <div class="db-val"><p th:text="${gps._id}">_id</p></div>
+            <div class="db-val"><p th:text="${gps.boxId}">box_id</p></div>
+            <div class="db-val"><p th:text="${gps.characteristic}">characteristic</p></div>
+            <div class="db-val"><p th:text="${gps.ewhemi}">ewhemi</p></div>
+            <div class="db-val"><p th:text="${gps.gpssta}">gpssta</p></div>
+            <div class="db-val"><p th:text="${gps.latitude}">latitude</p></div>
+            <div class="db-val"><p th:text="${gps.longitude}">longitude</p></div>
+            <div class="db-val"><p th:text="${gps.nshemi}">timestamp</p></div>
+            <div class="db-val"><p th:text="${gps.speed}">speed</p></div>
+            <div class="db-val"><p th:text="${gps.utc_time_day}">utc_time_day</p></div>
+            <div class="db-val"><p th:text="${gps.utc_time_year}">utc_time_year</p></div>
+            <div class="db-val"><p th:text="${gps.timestamp}">voltage</p></div>
+            <div class="db-val"><p></p></div>
+
+        </div>
+
+    </div>
+
+    <div class="inner" id="mpuGrid" hidden="hidden">
+
+        <div class="inner-content" th:each="mpu:${top100.get('mpu')}">
+
+            <div class="db-val2"><p th:text="${mpu._id}">_id</p></div>
+            <div class="db-val2">
+
+                <div th:each="i:${mpu.acX}">
+
+                    <p th:text="${i}"></p>
+
+                </div>
+
+            </div>
+            <div class="db-val2">
+
+                <div th:each="i:${mpu.acY}">
+
+                    <p th:text="${i}"></p>
+
+                </div>
+
+            </div>
+            <div class="db-val2">
+
+                <div th:each="i:${mpu.acZ}">
+
+                    <p th:text="${i}"></p>
+
+                </div>
+
+            </div>
+            <div class="db-val2"><p th:text="${mpu.boxId}">box_id</p></div>
+            <div class="db-val2"><p th:text="${mpu.characteristic}">characteristic</p></div>
+            <div class="db-val2">
+
+                <div th:each="i:${mpu.gyX}">
+
+                    <p th:text="${i}"></p>
+
+                </div>
+
+            </div>
+            <div class="db-val2">
+
+                <div th:each="i:${mpu.gyY}">
+
+                    <p th:text="${i}"></p>
+
+                </div>
+
+            </div>
+            <div class="db-val2">
+
+                <div th:each="i:${mpu.gyZ}">
+
+                    <p th:text="${i}"></p>
+
+                </div>
+
+            </div>
+            <div class="db-val2"><p th:text="${mpu.utc_time_day}">utc_time_day</p></div>
+            <div class="db-val2"><p th:text="${mpu.utc_time_year}">utc_time_year</p></div>
+            <div class="db-val2"><p th:text="${mpu.timestamp}">timestamp</p></div>
+            <div class="db-val2"><p></p></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!--bootstrap-->
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"/>
+<script src="/bootstrap/js/bootstrap.min.js"/>
+<!---->
+
+<script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+
+    var currentSlected = /*[[${selectedTab}]]*/0;
+
+    $('#trieColBar').show();
+    $('#gpsColBar').hide();
+    $('#mpuColBar').hide();
+
+    $('#tireGrid').show();
+    $('#gpsGrid').hide();
+    $('#mpuGrid').hide();
+
+    click(currentSlected);
+
+    $("#tbtn").click(function(){
+        click(0);
+        currentSlected = 0;
+    });
+
+    $("#gbtn").click(function(){
+        click(1);
+        currentSlected = 1;
+    });
+
+    $("#mbtn").click(function(){
+        click(2);
+        currentSlected = 2;
+    });
+
+
+    function click(index) {
+
+        $.ajax({
+
+            type: "get",
+            url: "/charts/ajaxSendSelected",
+            dataType: "json",
+            async: true,
+            data: {
+                "index": index
+            },
+            success: function (result) {
+
+
+
+            },
+            error : function(xhr, status, errMsg) {
+
+
+
+            }
+
+        });
+
+        switch (index) {
+
+            case 0:
+
+                $('#trieColBar').show();
+                $('#gpsColBar').hide();
+                $('#mpuColBar').hide();
+
+                $('#tireGrid').show();
+                $('#gpsGrid').hide();
+                $('#mpuGrid').hide();
+
+                break;
+
+            case 1:
+
+                $('#trieColBar').hide();
+                $('#gpsColBar').show();
+                $('#mpuColBar').hide();
+
+                $('#tireGrid').hide();
+                $('#gpsGrid').show();
+                $('#mpuGrid').hide();
+
+                break;
+
+            case 2:
+
+                $('#trieColBar').hide();
+                $('#gpsColBar').hide();
+                $('#mpuColBar').show();
+
+                $('#tireGrid').hide();
+                $('#gpsGrid').hide();
+                $('#mpuGrid').show();
+
+                break;
+
+        }
+
+    }
+
+    setInterval(function () {
+
+        location.reload();
+
+    }, 30000);
+
+    /*]]>*/
+</script>
+
+</body>
+</html>
