@@ -7,6 +7,8 @@ import java.time.ZoneOffset;
 
 public class Statices {
 
+    //public static int utc_tmp = 1519864055;
+
     public static long getTimeUTC() {
 
         String zone = ZoneId.systemDefault().toString();
@@ -22,6 +24,8 @@ public class Statices {
         //System.out.println("with " + (timeSecLocal - timeSecUTC) / 3600 + " hour");
 
         return timeSecUTC;
+
+        //return utc_tmp ++;
 
     }
 

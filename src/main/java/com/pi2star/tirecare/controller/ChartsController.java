@@ -209,6 +209,8 @@ public class ChartsController {
         if(tireMessage == null) {
             tireMessage = new TireMessage();
             tireMessage.setTimestamp(timestamp);
+            tireMessage.setPressure(-1);
+            tireMessage.setTemperature(-274);
         }
 
         System.out.println(tireMessage);

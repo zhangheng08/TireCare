@@ -2,11 +2,479 @@ var data_p = [];
 var data_t = [];
 var data_a = [];
 
-var presureLast = 100;
+var lastPressure = 0;
+var prePieces = [];
+var preLastPoint = 1519982184000;
+var preCurrentPoint   = 1519982184000;
+
 var lastTempera = 0;
+var tmpPieces = [];
+var tmpLastPoint = 1519982184000;
+var tmpCurrentPoint   = 1519982184000;
+
+
 var lastAcceler = 0;
+var accPieces = [];
+var accLastPoint = 1519982184000;
+var accCurrentPoint   = 1519982184000;
 
 var nIntervId;
+
+var accOption = {
+
+    grid:[
+
+        {x: '0%', y: '20%', width: '110%', height: '73%'}
+
+    ],
+    title : {
+        text : '加速度实时数据',
+        left: 'center',
+        top: '20',
+        textStyle : {
+            color : 'rgba(255, 255, 255, 0.8)',
+            fontWeight : 'lighter',
+            fontSize : 23,
+            fontFamily: 'Microsoft YaHei UI'
+        }
+    },
+    tooltip : {
+        trigger : 'axis',
+        snap:true,
+        formatter : function(params) {
+            params = params[0];
+            var date = new Date(params.name);
+            return params.value[1] + " m/s²";
+        },
+        axisPointer : {
+            type: 'line',
+            animation : true,
+            lineStyle:{
+                type: 'dotted',
+                color:'rgba(255,255,255, 0.3)'
+            }
+        }
+    },
+    xAxis : [{
+        gridIndex: 0,
+        type : 'time',
+        boundaryGap: [0, '100%'],
+        axisLine : {
+            lineStyle : {
+                type : 'solid',
+                color : 'gray', //左边线的颜色
+                width : '1.2', //坐标线的宽度
+                opacity:1
+            }
+        },
+        axisLabel : {
+            align:'left',
+            textStyle : {
+                color : '#ccd6d7', //坐标值得具体的颜色
+
+            }
+        },
+        splitLine : {
+            show : false,
+            lineStyle: {
+                type: 'dashed',
+                color: ['rgba(255,255,255,0.1)', 'rgba(255,255,255,0.1)']
+            }
+        }
+    }],
+    yAxis : [{
+        gridIndex: 0,
+        offset:0,
+        type : 'value',
+        boundaryGap : [ 0, '100%' ],
+        minInterval : 0.5,
+        axisLine : {
+            lineStyle : {
+                type : 'solid',
+                color : 'gray', //左边线的颜色
+                width : '1.2', //坐标线的宽度
+                opacity:1
+            }
+        },
+        axisLabel : {
+            textStyle : {
+                color : '#ccd6d7', //坐标值得具体的颜色
+            },
+            inside:true,
+            showMinLabel:false,
+            showMaxLabel:true
+        },
+        axisTick: {
+            inside:true
+        },
+        splitLine : {
+            show : true,
+            lineStyle: {
+                type: 'dashed',
+                color: ['rgba(255,255,255,0.06)', 'rgba(255,255,255,0.06)']
+            }
+        }
+    }],
+    visualMap: {
+        show: false,
+        dimension: 0,
+        pieces: [{
+            gt: 1519982184000,
+            lte: 2519982194000,
+            color: '#5e8c8a'
+        }]
+    },
+    series : [ {
+        name : '加速度数据',
+        type : 'line',
+        showSymbol : false,
+        hoverAnimation : false,
+        symbolSize : 8, //图标尺寸
+        smooth : true,
+        itemStyle : {
+            emphasis:{
+
+                color:'rgba(255,255,255,0.2)',
+                borderColor: '#fff',
+                borderWidth: 2,
+                opacity: 1
+
+            }
+        },
+        areaStyle : {
+            normal : {
+                color : {
+                    type : 'linear',
+                    x : 0,
+                    y : 0,
+                    x2 : 0,
+                    y2 : 1,
+                    colorStops : [ {
+                        offset : 0,
+                        color : 'rgba(256, 256, 256, 0.2)' // 0% 处的颜色
+                    }, {
+                        offset : 1,
+                        color : 'rgba(256, 256, 256, 0.0)' // 100% 处的颜色
+                    } ],
+                    globalCoord : true // 缺省为 false
+                }
+            }
+        },
+        lineStyle : {
+            normal : {
+                width : 2, //连线粗细
+                //color : "#5e8c8a", //连线颜色
+                opacity:1
+            }
+        },
+
+        data : data_a
+    } ]
+};
+
+var optionPressure = {
+    grid:[
+
+        {x: '0%', y: '20%', width: '110%', height: '73%'}
+
+    ],
+    title : {
+        text : '胎压实时数据',
+        left: 'center',
+        top: '20',
+        textStyle : {
+            color : 'rgba(255, 255, 255, 0.8)',
+            fontWeight : 'lighter',
+            fontSize : 23,
+            fontFamily: 'Microsoft YaHei UI'
+        }
+    },
+    tooltip : {
+        trigger : 'axis',
+        snap:true,
+        formatter : function(params) {
+            params = params[0];
+            var date = new Date(params.name);
+            return params.value[1] + " Pa";
+        },
+        axisPointer : {
+            type: 'line',
+            animation : true,
+            lineStyle:{
+                type: 'dotted',
+                color:'rgba(255,255,255, 0.3)'
+            }
+        }
+    },
+    xAxis : [{
+        gridIndex: 0,
+        type : 'time',
+        boundaryGap: [0, '100%'],
+        axisLine : {
+            lineStyle : {
+                type : 'solid',
+                color : 'gray', //左边线的颜色
+                width : '1.2', //坐标线的宽度
+                opacity:1
+            }
+        },
+        axisLabel : {
+            align:'left',
+            textStyle : {
+                color : '#ccd6d7', //坐标值得具体的颜色
+
+            }
+        },
+        splitLine : {
+            show : false,
+            lineStyle: {
+                type: 'dashed',
+                color: ['rgba(255,255,255,0.1)', 'rgba(255,255,255,0.1)']
+            }
+        }
+    }],
+    yAxis : [{
+        gridIndex: 0,
+        offset:0,
+        type : 'value',
+        boundaryGap : [ 0, '100%' ],
+        minInterval : 0.2,
+        /*            max:103,
+                    min:98,*/
+        axisLine : {
+            lineStyle : {
+                type : 'solid',
+                color : 'gray', //左边线的颜色
+                width : '1.2', //坐标线的宽度
+                opacity:1
+            }
+        },
+        axisLabel : {
+            textStyle : {
+                color : '#ccd6d7', //坐标值得具体的颜色
+            },
+            inside:true,
+            showMinLabel:false,
+            showMaxLabel:true
+        },
+        axisTick: {
+            inside:true
+        },
+        splitLine : {
+            show : true,
+            lineStyle: {
+                type: 'dashed',
+                color: ['rgba(255,255,255,0.06)', 'rgba(255,255,255,0.06)']
+            }
+        }
+    }],
+    visualMap: {
+        show: false,
+        dimension: 0,
+        pieces: [{
+            gt: 1519982184000,
+            lte: 2519982194000,
+            color: '#5e8c8a'
+            }]
+    },
+    series : [ {
+        name : '胎压数据',
+        type : 'line',
+        showSymbol : false,
+        hoverAnimation : false,
+        symbolSize : 8, //图标尺寸
+        smooth : true,
+        itemStyle : {
+            emphasis:{
+
+                color:'rgba(255,255,255,0.2)',
+                borderColor: '#fff',
+                borderWidth: 2,
+                opacity: 1
+
+            }
+        },
+        areaStyle : {
+            normal : {
+                color : {
+                    type : 'linear',
+                    x : 0,
+                    y : 0,
+                    x2 : 0,
+                    y2 : 1,
+                    colorStops : [ {
+                        offset : 0,
+                        color : 'rgba(256, 256, 256, 0.2)' // 0% 处的颜色
+                    }, {
+                        offset : 1,
+                        color : 'rgba(256, 256, 256, 0.0)' // 100% 处的颜色
+                    } ],
+                    globalCoord : true // 缺省为 false
+                }
+            }
+        },
+        lineStyle : {
+            normal : {
+                width : 2, //连线粗细
+                //color : "#5e8c8a", //连线颜色
+                opacity:1
+            }
+        },
+
+        data : data_p
+    } ]
+};
+
+var optionTemperature = {
+    grid:[
+
+        {x: '0%', y: '20%', width: '110%', height: '73%'}
+
+    ],
+    title : {
+        text : '温度实时数据',
+        left: 'center',
+        top: '20',
+        textStyle : {
+            color : 'rgba(255, 255, 255, 0.8)',
+            fontWeight : 'lighter',
+            fontSize : 23,
+            fontFamily: 'Microsoft YaHei UI'
+        }
+    },
+    tooltip : {
+        trigger : 'axis',
+        snap:true,
+        formatter : function(params) {
+            params = params[0];
+            var date = new Date(params.name);
+            return params.value[1] + " ℃";
+        },
+        axisPointer : {
+            type: 'line',
+            animation : true,
+            lineStyle:{
+                type: 'dotted',
+                color:'rgba(255,255,255, 0.3)'
+            }
+        }
+    },
+    visualMap: {
+        show: false,
+        dimension: 0,
+        pieces: [{
+            gt: 1519982184000,
+            lte: 2519982194000,
+            color: '#5e8c8a'
+        }]
+    },
+    xAxis : [{
+        gridIndex: 0,
+        type : 'time',
+        boundaryGap: [0, '100%'],
+        axisLine : {
+            lineStyle : {
+                type : 'solid',
+                color : 'gray', //左边线的颜色
+                width : '1.2', //坐标线的宽度
+                opacity:1
+            }
+        },
+        axisLabel : {
+            align:'left',
+            textStyle : {
+                color : '#ccd6d7', //坐标值得具体的颜色
+
+            }
+        },
+        splitLine : {
+            show : false,
+            lineStyle: {
+                type: 'dashed',
+                color: ['rgba(255,255,255,0.1)', 'rgba(255,255,255,0.1)']
+            }
+        }
+    }],
+    yAxis : [{
+        gridIndex: 0,
+        offset:0,
+        type : 'value',
+        boundaryGap : [ 0, '100%' ],
+        minInterval : 0.2,
+        axisLine : {
+            lineStyle : {
+                type : 'solid',
+                color : 'gray', //左边线的颜色
+                width : '1.2', //坐标线的宽度
+                opacity:1
+            }
+        },
+        axisLabel : {
+            textStyle : {
+                color : '#ccd6d7', //坐标值得具体的颜色
+            },
+            inside:true,
+            showMinLabel:false,
+            showMaxLabel:true
+        },
+        axisTick: {
+            inside:true
+        },
+        splitLine : {
+            show : true,
+            lineStyle: {
+                type: 'dashed',
+                color: ['rgba(255,255,255,0.06)', 'rgba(255,255,255,0.06)']
+            }
+        }
+    }],
+    series : [ {
+        name : '温度数据',
+        type : 'line',
+        showSymbol : false,
+        hoverAnimation : false,
+        symbolSize : 8, //图标尺寸
+        smooth : true,
+        itemStyle : {
+            emphasis:{
+
+                color:'rgba(255,255,255,0.2)',
+                borderColor: '#fff',
+                borderWidth: 2,
+                opacity: 1
+
+            }
+        },
+        areaStyle : {
+            normal : {
+                color : {
+                    type : 'linear',
+                    x : 0,
+                    y : 0,
+                    x2 : 0,
+                    y2 : 1,
+                    colorStops : [ {
+                        offset : 0,
+                        color : 'rgba(256, 256, 256, 0.2)' // 0% 处的颜色
+                    }, {
+                        offset : 1,
+                        color : 'rgba(256, 256, 256, 0.0)' // 100% 处的颜色
+                    } ],
+                    globalCoord : true // 缺省为 false
+                }
+            }
+        },
+        lineStyle : {
+            normal : {
+                width : 2, //连线粗细
+                //color : "#5e8c8a", //连线颜色
+                opacity:1
+            }
+        },
+
+        data : data_t
+    } ]
+};
 
 function locationUpdate(param) {
 
@@ -128,6 +596,7 @@ function loadTireMessage(param) {
         error : function(xhr, status, errMsg) {
 
 
+
         }
 
     });
@@ -136,490 +605,212 @@ function loadTireMessage(param) {
 
 function drawAccChart(tireMessage, param) {
 
-    if(tireMessage.accelerate != 0) lastAcceler = tireMessage.accelerate;
-    else tireMessage.accelerate = lastAcceler;
+    accCurrentPoint = tireMessage.timestamp * 1000;
+
+    if(accPieces.length > 1) accPieces.pop();
+    if(accPieces.length == 0) accLastPoint = accCurrentPoint - 1000;
+
+    var clr = '#ce4b44';
+
+    if(tireMessage.accelerate != 0) {
+
+        lastAcceler = tireMessage.accelerate;
+        clr = 'rgba(210, 160, 60, 0.8)';
+
+        var piece = {
+            gt: accLastPoint - 500,
+            lte: accCurrentPoint + 500,
+            color: clr
+        };
+
+        accPieces.push(piece);
+
+        accPieces[accPieces.length - 2].lte -= 500;
+
+    } else {
+
+        tireMessage.accelerate = lastAcceler;
+        clr = 'rgba(169, 170, 181, 0.5)';
+
+        var piece = {
+            gt: accLastPoint,
+            lte: accCurrentPoint,
+            color: clr
+        };
+
+        accPieces.push(piece);
+
+    }
+
+    accPieces.push({gt: accCurrentPoint,
+        lte: accCurrentPoint, //9519982194000,
+        color: clr});
+
+    accLastPoint = accCurrentPoint;
+
+    if(accPieces.length > 31) accPieces.shift();
+
+    accOption.visualMap = {
+        show: false,
+        dimension: 0,
+        pieces: accPieces
+    };
 
     var p = {
-        name : tireMessage.timestamp * 1000,
+        name : accCurrentPoint,
         value : [
-            tireMessage.timestamp * 1000,
+            accCurrentPoint,
             tireMessage.accelerate
         ]
     };
 
-    if(data_a.length >= 30) data_a.shift();
+    if(data_a.length > 30) data_a.shift();
     data_a.push(p);
 
-    var option = {
-        grid:[
+    accOption.series[0].data = data_a;
 
-            {x: '0%', y: '20%', width: '110%', height: '73%'}
-
-        ],
-        title : {
-            text : '加速度实时数据',
-            left: 'center',
-            top: '20',
-            textStyle : {
-                color : 'rgba(255, 255, 255, 0.8)',
-                fontWeight : 'lighter',
-                fontSize : 23,
-                fontFamily: 'Microsoft YaHei UI'
-            }
-        },
-        tooltip : {
-            trigger : 'axis',
-            snap:true,
-            formatter : function(params) {
-                params = params[0];
-                var date = new Date(params.name);
-                return params.value[1] + " m/s²";
-            },
-            axisPointer : {
-                type: 'line',
-                animation : true,
-                lineStyle:{
-                    type: 'dotted',
-                    color:'rgba(255,255,255, 0.3)'
-                }
-            }
-        },
-        xAxis : [{
-            gridIndex: 0,
-            type : 'time',
-            boundaryGap: [0, '100%'],
-            axisLine : {
-                lineStyle : {
-                    type : 'solid',
-                    color : 'gray', //左边线的颜色
-                    width : '1.2', //坐标线的宽度
-                    opacity:1
-                }
-            },
-            axisLabel : {
-                align:'left',
-                textStyle : {
-                    color : '#ccd6d7', //坐标值得具体的颜色
-
-                }
-            },
-            splitLine : {
-                show : false,
-                lineStyle: {
-                    type: 'dashed',
-                    color: ['rgba(255,255,255,0.1)', 'rgba(255,255,255,0.1)']
-                }
-            }
-        }],
-        yAxis : [{
-            gridIndex: 0,
-            offset:0,
-            type : 'value',
-            boundaryGap : [ 0, '100%' ],
-            minInterval : 1,
-            axisLine : {
-                lineStyle : {
-                    type : 'solid',
-                    color : 'gray', //左边线的颜色
-                    width : '1.2', //坐标线的宽度
-                    opacity:1
-                }
-            },
-            axisLabel : {
-                textStyle : {
-                    color : '#ccd6d7', //坐标值得具体的颜色
-                },
-                inside:true,
-                showMinLabel:false,
-                showMaxLabel:true
-            },
-            axisTick: {
-                inside:true
-            },
-            splitLine : {
-                show : true,
-                lineStyle: {
-                    type: 'dashed',
-                    color: ['rgba(255,255,255,0.06)', 'rgba(255,255,255,0.06)']
-                }
-            }
-        }],
-        series : [ {
-            name : '加速度数据',
-            type : 'line',
-            showSymbol : false,
-            hoverAnimation : false,
-            symbolSize : 8, //图标尺寸
-            smooth : true,
-            itemStyle : {
-                emphasis:{
-
-                    color:'rgba(255,255,255,0.2)',
-                    borderColor: '#fff',
-                    borderWidth: 2,
-                    opacity: 1
-
-                }
-            },
-            areaStyle : {
-                normal : {
-                    color : {
-                        type : 'linear',
-                        x : 0,
-                        y : 0,
-                        x2 : 0,
-                        y2 : 1,
-                        colorStops : [ {
-                            offset : 0,
-                            color : 'rgba(256, 256, 256, 0.4)' // 0% 处的颜色
-                        }, {
-                            offset : 1,
-                            color : 'rgba(256, 256, 256, 0.0)' // 100% 处的颜色
-                        } ],
-                        globalCoord : true // 缺省为 false
-                    }
-                }
-            },
-            lineStyle : {
-                normal : {
-                    width : 1.5, //连线粗细
-                    color : "#5e8c8a", //连线颜色
-                    opacity:1
-                }
-            },
-
-            data : data_a
-        } ]
-    };
-
-    param.aContainer.setOption(option);
+    param.aContainer.setOption(accOption);
 
 }
 
 function drawTemperatureChart(tireMessage, param) {
 
-    if(tireMessage.temperature != 0) lastTempera = tireMessage.temperature;
-    else tireMessage.temperature = lastTempera;
+    tmpCurrentPoint = tireMessage.timestamp * 1000;
+
+    if(tmpPieces.length > 1) tmpPieces.pop();
+    if(tmpPieces.length == 0) tmpLastPoint = tmpCurrentPoint - 1000;
+
+    var clr = '#ce4b44';
+
+    if(tireMessage.temperature != -274) {
+
+        lastTempera = tireMessage.temperature;
+        clr = 'rgba(210, 160, 60, 0.8)';
+
+        var piece = {
+            gt: tmpLastPoint - 500,
+            lte: tmpCurrentPoint + 500,
+            color: clr
+        };
+
+        tmpPieces.push(piece);
+
+        tmpPieces[tmpPieces.length - 2].lte -= 500;
+
+    } else {
+
+        tireMessage.temperature = lastTempera;
+        clr = 'rgba(169, 170, 181, 0.5)';
+
+        var piece = {
+            gt: tmpLastPoint,
+            lte: tmpCurrentPoint,
+            color: clr
+        };
+
+        tmpPieces.push(piece);
+
+    }
+
+    tmpPieces.push({gt: tmpCurrentPoint,
+        lte: tmpCurrentPoint, //9519982194000,
+        color: clr});
+
+    tmpLastPoint = tmpCurrentPoint;
+
+    if(tmpPieces.length > 31) tmpPieces.shift();
+
+    optionTemperature.visualMap = {
+        show: false,
+        dimension: 0,
+        pieces: tmpPieces
+    };
 
     var p = {
-        name : tireMessage.timestamp * 1000,
+        name : tmpCurrentPoint,
         value : [
-            tireMessage.timestamp * 1000,
+            tmpCurrentPoint,
             tireMessage.temperature
         ]
     };
 
-    if(data_t.length >= 30) data_t.shift();
+    if(data_t.length > 30) data_t.shift();
     data_t.push(p);
 
-    var option = {
-        grid:[
+    optionTemperature.series[0].data = data_t;
 
-            {x: '0%', y: '20%', width: '110%', height: '73%'}
-
-        ],
-        title : {
-            text : '温度实时数据',
-            left: 'center',
-            top: '20',
-            textStyle : {
-                color : 'rgba(255, 255, 255, 0.8)',
-                fontWeight : 'lighter',
-                fontSize : 23,
-                fontFamily: 'Microsoft YaHei UI'
-            }
-        },
-        tooltip : {
-            trigger : 'axis',
-            snap:true,
-            formatter : function(params) {
-                params = params[0];
-                var date = new Date(params.name);
-                return params.value[1] + " ℃";
-            },
-            axisPointer : {
-                type: 'line',
-                animation : true,
-                lineStyle:{
-                    type: 'dotted',
-                    color:'rgba(255,255,255, 0.3)'
-                }
-            }
-        },
-        xAxis : [{
-            gridIndex: 0,
-            type : 'time',
-            boundaryGap: [0, '100%'],
-            axisLine : {
-                lineStyle : {
-                    type : 'solid',
-                    color : 'gray', //左边线的颜色
-                    width : '1.2', //坐标线的宽度
-                    opacity:1
-                }
-            },
-            axisLabel : {
-                align:'left',
-                textStyle : {
-                    color : '#ccd6d7', //坐标值得具体的颜色
-
-                }
-            },
-            splitLine : {
-                show : false,
-                lineStyle: {
-                    type: 'dashed',
-                    color: ['rgba(255,255,255,0.1)', 'rgba(255,255,255,0.1)']
-                }
-            }
-        }],
-        yAxis : [{
-            gridIndex: 0,
-            offset:0,
-            type : 'value',
-            boundaryGap : [ 0, '100%' ],
-            minInterval : 1,
-            axisLine : {
-                lineStyle : {
-                    type : 'solid',
-                    color : 'gray', //左边线的颜色
-                    width : '1.2', //坐标线的宽度
-                    opacity:1
-                }
-            },
-            axisLabel : {
-                textStyle : {
-                    color : '#ccd6d7', //坐标值得具体的颜色
-                },
-                inside:true,
-                showMinLabel:false,
-                showMaxLabel:true
-            },
-            axisTick: {
-                inside:true
-            },
-            splitLine : {
-                show : true,
-                lineStyle: {
-                    type: 'dashed',
-                    color: ['rgba(255,255,255,0.06)', 'rgba(255,255,255,0.06)']
-                }
-            }
-        }],
-        series : [ {
-            name : '温度数据',
-            type : 'line',
-            showSymbol : false,
-            hoverAnimation : false,
-            symbolSize : 8, //图标尺寸
-            smooth : true,
-            itemStyle : {
-                emphasis:{
-
-                    color:'rgba(255,255,255,0.2)',
-                    borderColor: '#fff',
-                    borderWidth: 2,
-                    opacity: 1
-
-                }
-            },
-            areaStyle : {
-                normal : {
-                    color : {
-                        type : 'linear',
-                        x : 0,
-                        y : 0,
-                        x2 : 0,
-                        y2 : 1,
-                        colorStops : [ {
-                            offset : 0,
-                            color : 'rgba(256, 256, 256, 0.4)' // 0% 处的颜色
-                        }, {
-                            offset : 1,
-                            color : 'rgba(256, 256, 256, 0.0)' // 100% 处的颜色
-                        } ],
-                        globalCoord : true // 缺省为 false
-                    }
-                }
-            },
-            lineStyle : {
-                normal : {
-                    width : 1.5, //连线粗细
-                    color : "#5e8c8a", //连线颜色
-                    opacity:1
-                }
-            },
-
-            data : data_t
-        } ]
-    };
-
-    param.tContainer.setOption(option);
+    param.tContainer.setOption(optionTemperature);
 
 }
 
 
 function drawPressureChart(tireMessage, param) {
 
-    if(tireMessage.pressure != 0)  presureLast = tireMessage.pressure;
-    else tireMessage.pressure = presureLast;
+    preCurrentPoint = tireMessage.timestamp * 1000;
+
+    if(prePieces.length > 1) prePieces.pop();
+    if(prePieces.length == 0) preLastPoint = preCurrentPoint - 1000;
+
+    var clr = '#ce4b44';
+
+    if(tireMessage.pressure >= 0) {
+
+        lastPressure = tireMessage.pressure;
+        clr = 'rgba(210, 160, 60, 0.8)';
+
+        var piece = {
+            gt: preLastPoint - 500,
+            lte: preCurrentPoint + 500,
+            color: clr
+        };
+
+        prePieces.push(piece);
+
+        prePieces[prePieces.length - 2].lte -= 500;
+
+    } else {
+
+        tireMessage.pressure = lastPressure;
+        clr = 'rgba(169, 170, 181, 0.5)';
+
+        var piece = {
+            gt: preLastPoint,
+            lte: preCurrentPoint,
+            color: clr
+        };
+
+        prePieces.push(piece);
+
+    }
+
+    prePieces.push({gt: preCurrentPoint,
+        lte: preCurrentPoint, //9519982194000,
+        color: clr});
+
+    preLastPoint = preCurrentPoint;
+
+    if(prePieces.length > 31) prePieces.shift();
+
+    optionPressure.visualMap = {
+        show: false,
+        dimension: 0,
+        pieces: prePieces
+    };
 
     var p = {
-        name : tireMessage.timestamp * 1000,
+        name : preCurrentPoint,
         value : [
-            tireMessage.timestamp * 1000,
+            preCurrentPoint,
             tireMessage.pressure
         ]
     };
 
-    if(data_p.length >= 30) data_p.shift();
+    if(data_p.length > 30) data_p.shift();
     data_p.push(p);
 
-    var option = {
-        grid:[
+    optionPressure.series[0].data = data_p;
 
-            {x: '0%', y: '20%', width: '110%', height: '73%'}
-
-        ],
-        title : {
-            text : '胎压实时数据',
-            left: 'center',
-            top: '20',
-            textStyle : {
-                color : 'rgba(255, 255, 255, 0.8)',
-                fontWeight : 'lighter',
-                fontSize : 23,
-                fontFamily: 'Microsoft YaHei UI'
-            }
-        },
-        tooltip : {
-            trigger : 'axis',
-            snap:true,
-            formatter : function(params) {
-                params = params[0];
-                var date = new Date(params.name);
-                return params.value[1] + " Pa";
-            },
-            axisPointer : {
-                type: 'line',
-                animation : true,
-                lineStyle:{
-                    type: 'dotted',
-                    color:'rgba(255,255,255, 0.3)'
-                }
-            }
-        },
-        xAxis : [{
-            gridIndex: 0,
-            type : 'time',
-            boundaryGap: [0, '100%'],
-            axisLine : {
-                lineStyle : {
-                    type : 'solid',
-                    color : 'gray', //左边线的颜色
-                    width : '1.2', //坐标线的宽度
-                    opacity:1
-                }
-            },
-            axisLabel : {
-                align:'left',
-                textStyle : {
-                    color : '#ccd6d7', //坐标值得具体的颜色
-
-                }
-            },
-            splitLine : {
-                show : false,
-                lineStyle: {
-                    type: 'dashed',
-                    color: ['rgba(255,255,255,0.1)', 'rgba(255,255,255,0.1)']
-                }
-            }
-        }],
-        yAxis : [{
-            gridIndex: 0,
-            offset:0,
-            type : 'value',
-            boundaryGap : [ 0, '100%' ],
-            minInterval : 0.2,
-/*            max:103,
-            min:98,*/
-            axisLine : {
-                lineStyle : {
-                    type : 'solid',
-                    color : 'gray', //左边线的颜色
-                    width : '1.2', //坐标线的宽度
-                    opacity:1
-                }
-            },
-            axisLabel : {
-                textStyle : {
-                    color : '#ccd6d7', //坐标值得具体的颜色
-                },
-                inside:true,
-                showMinLabel:false,
-                showMaxLabel:true
-            },
-            axisTick: {
-                inside:true
-            },
-            splitLine : {
-                show : true,
-                lineStyle: {
-                    type: 'dashed',
-                    color: ['rgba(255,255,255,0.06)', 'rgba(255,255,255,0.06)']
-                }
-            }
-        }],
-        series : [ {
-            name : '胎压数据',
-            type : 'line',
-            showSymbol : false,
-            hoverAnimation : false,
-            symbolSize : 8, //图标尺寸
-            smooth : true,
-            itemStyle : {
-                emphasis:{
-
-                    color:'rgba(255,255,255,0.2)',
-                    borderColor: '#fff',
-                    borderWidth: 2,
-                    opacity: 1
-
-                }
-            },
-            areaStyle : {
-                normal : {
-                    color : {
-                        type : 'linear',
-                        x : 0,
-                        y : 0,
-                        x2 : 0,
-                        y2 : 1,
-                        colorStops : [ {
-                            offset : 0,
-                            color : 'rgba(256, 256, 256, 0.4)' // 0% 处的颜色
-                        }, {
-                            offset : 1,
-                            color : 'rgba(256, 256, 256, 0.0)' // 100% 处的颜色
-                        } ],
-                        globalCoord : true // 缺省为 false
-                    }
-                }
-            },
-            lineStyle : {
-                normal : {
-                    width : 1.5, //连线粗细
-                    color : "#5e8c8a", //连线颜色
-                    opacity:1
-                }
-            },
-
-            data : data_p
-        } ]
-    };
-
-    param.pContainer.setOption(option);
+    param.pContainer.setOption(optionPressure);
 
 }
 
