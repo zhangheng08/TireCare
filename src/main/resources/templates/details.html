@@ -8,6 +8,11 @@
     <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="/css/common.css" rel="stylesheet"/>
     <link href="/css/detail_style.css" rel="stylesheet"/>
+
+    <!--date picker -->
+    <link type="text/css" href="/datepicker/css/jquery-ui-1.8.17.custom.css" rel="stylesheet" />
+    <link type="text/css" href="/datepicker/css/jquery-ui-timepicker-addon.css" rel="stylesheet" />
+
 </head>
 <body>
 
@@ -84,24 +89,34 @@
 
         </div>-->
 
-        <div id="wheelNameCon" class="col-xs-12 col-md-2 tabItem">
+        <div class="col-xs-12 col-md-8 tab">
 
-            <img src="/imgs/lt.png"/><p class="l">左前</p>
+            <div id="wheelNameCon" class="tabItem">
 
-        </div>
-        <div id="lifeTab" class="col-xs-12 col-md-2 tabItem">
+                <img src="/imgs/lt.png"/><p class="l">左前</p>
 
-            <p id="lifeTab-p" class="n nbgd" onclick="javascript:switchTab('lifeTab-p', 'pieChartsCon')">轮胎寿命</p>
+            </div>
 
-        </div>
-        <div id="roadTab" class="col-xs-12 col-md-2 tabItem" >
+            <div id="lifeTab" class="tabItem">
 
-            <p id="roadTab-p" class="n nbgd" onclick="javascript:switchTab('roadTab-p', 'rectChartsCon')">路面信息</p>
+                <p id="lifeTab-p" class="n nbgd" onclick="javascript:switchTab('lifeTab-p', 'pieChartsCon')">轮胎寿命</p>
 
-        </div>
-        <div id="timeLineTab" class="col-xs-12 col-md-2 tabItem">
+            </div>
+            <div id="roadTab" class="tabItem" >
 
-            <p id="timeLineTab-p" class="n nbgu" onclick="javascript:switchTab('timeLineTab-p', 'lineChartsCon')">实时监控</p>
+                <p id="roadTab-p" class="n nbgd" onclick="javascript:switchTab('roadTab-p', 'rectChartsCon')">路面信息</p>
+
+            </div>
+            <div id="timeLineTab" class="tabItem">
+
+                <p id="timeLineTab-p" class="n nbgu" onclick="javascript:switchTab('timeLineTab-p', 'lineChartsCon')">实时监控</p>
+
+            </div>
+            <div id="timeHistoryTab" class="tabItem">
+
+                <p id="timeHistoryTab-p" class="n nbgd" onclick="javascript:switchTab('timeHistoryTab-p', 'historyChartsCon')">历史数据</p>
+
+            </div>
 
         </div>
 
@@ -149,6 +164,34 @@
 
             </div>
 
+            <div id="historyChartsCon" class="row row_mt history_chart" style="margin-top: 0px">
+
+                <div class="col-xs-6 col-md-2 picker-con">
+
+                    <p class="picker-con"><input type="text" name="dateStart" class="timepicker-start" value="起始时间" /></p>
+
+                </div>
+
+                <div class="col-xs-6 col-md-2 picker-con">
+
+                    <p class="picker-con"><input type="text" name="dateEnd" class="timepicker-end" value="截止时间" /></p>
+
+                </div>
+
+                <div class="col-xs-12 col-md-2 picker-con">
+
+                    <p class="picker-con"><input type="button" name="search" class="search-btn" value="查询" /></p>
+
+                </div>
+
+                <div id="h-p" class="col-md-12 chart_h"></div>
+
+                <div id="h-t" class="col-md-12 chart_h"></div>
+
+                <div id="h-a" class="col-md-12 chart_h"></div>
+
+            </div>
+
         </div>
 
         <div class="col-md-12 col-lg-2"></div>
@@ -171,6 +214,15 @@
 <!---->
 
 <script type="text/javascript" src="/js/charts.js" />
+<script type="text/javascript" src="/js/history.js" />
+
+<!--datepicker-->
+<script type="text/javascript" src="/datepicker/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="/datepicker/js/jquery-ui-1.8.17.custom.min.js"></script>
+<script type="text/javascript" src="/datepicker/js/jquery-ui-timepicker-addon.js"></script>
+<script type="text/javascript" src="/datepicker/js/jquery-ui-timepicker-zh-CN.js"></script>
+<!---->
+
 
 <script th:inline="javascript">
 
@@ -178,17 +230,25 @@
     initAmap();
 
     var wheels = [ 'lf', 'rf', 'lb', 'rb' ];
-    var chartCons = ['pieChartsCon', 'rectChartsCon', 'lineChartsCon'];
-    var tabPs = ['lifeTab-p', 'roadTab-p', 'timeLineTab-p'];
+    var chartCons = ['pieChartsCon', 'rectChartsCon', 'lineChartsCon', 'historyChartsCon'];
+    var tabPs = ['lifeTab-p', 'roadTab-p', 'timeLineTab-p', 'timeHistoryTab-p'];
     var wheelsNmCon = document.getElementById('wheelNameCon');
     var speedLabel = document.getElementById("speedP");
+
     var pContainer = echarts.init(document.getElementById('s-p'));
     var tContainer = echarts.init(document.getElementById('s-t'));
     var aContainer = echarts.init(document.getElementById('s-a'));
+
+    var pHistoryContainer = echarts.init(document.getElementById('h-p'));
+    var tHistoryContainer = echarts.init(document.getElementById('h-t'));
+    var aHistoryContainer = echarts.init(document.getElementById('h-a'));
+
 /*    var dataTime = getDateStr(new Date().getTime());//(1516967400000);//(new Date().getTime());
     var timeConver = dataTime.replace(/-/g, '/');*/
+
     var epochSecond = 0;//Date.parse(timeConver) / 1000 - 180;
     var place = 0;
+    var sIndex = 0;
     var boxId = /*[[${boxId}]]*/-1;
     var param = {"amap":map, "boxId":88,"dataTime":0, "epochSecond":epochSecond, "place":0, "pContainer":pContainer, "tContainer":tContainer, "aContainer":aContainer, "sContainer":speedLabel};
 
@@ -207,7 +267,6 @@
 
         window.clearInterval(nIntervId);
 
-        var sIndex = 0;
         var score = 85;
         var hadMiles = 21540;
 
@@ -336,6 +395,49 @@
         /*]]>*/
 
     }
+
+    $(function () {
+        $(".timepicker-start").datetimepicker({
+            //showOn: "button",
+            //buttonImage: "./css/images/icon_calendar.gif",
+            //buttonImageOnly: true,
+            showSecond: true,
+            timeFormat: 'hh:mm:ss',
+            stepHour: 1,
+            stepMinute: 1,
+            stepSecond: 1
+        });
+
+        $(".timepicker-end").datetimepicker({
+            //showOn: "button",
+            //buttonImage: "./css/images/icon_calendar.gif",
+            //buttonImageOnly: true,
+            showSecond: true,
+            timeFormat: 'hh:mm:ss',
+            stepHour: 1,
+            stepMinute: 1,
+            stepSecond: 1
+        });
+
+        $(".search-btn").click(function () {
+
+            var dateStartStr = $(".timepicker-start").val();
+            var dateEndStr = $(".timepicker-end").val();
+
+            dateStartStr = dateStartStr.replace(/-/g, '/');
+            dateEndStr = dateEndStr.replace(/-/g, '/');
+
+            var secStart = Date.parse(dateStartStr) / 1000;
+            var secEnd = Date.parse(dateEndStr) / 1000;
+
+            if(secStart == 'NaN' || secEnd == 'NaN' || (secStart > secEnd)) return;
+
+            fetchWithTimeslice(secStart, secEnd, sIndex);
+
+        });
+
+    })
+
 
 </script>
 

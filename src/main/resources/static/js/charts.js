@@ -1228,7 +1228,7 @@ function getDateStr(timeStamp) {
     var mStr = m < 10 ? "0" + m : "" + m;
     var sStr = s < 10 ? "0" + s : "" + s;
 
-    var timeStr = year + "-" + monthStr + "-" + dayStr + " " + hStr + ":" + mStr + ":" + sStr;
+    var timeStr = year + "" + monthStr + "" + dayStr + "\n" + hStr + ":" + mStr + ":" + sStr;
 
     return timeStr;
 

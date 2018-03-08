@@ -18,5 +18,11 @@ public interface TireRepository extends CrudRepository<TireMessage, Long> {
     @Query(value = "select * from tire_msg order by timestamp desc limit 0, 100", nativeQuery = true)
     ArrayList<TireMessage> findTopTireMessage();
 
+    @Query(value = "select * from tire_msg", nativeQuery = true)
+    ArrayList<TireMessage> findAllTireMessage();
+
+    @Query(value = "select * from tire_msg where place = ?1 and timestamp between ?2 and ?3", nativeQuery = true)
+    ArrayList<TireMessage> findBetweenTimeslice(int index, long from, long to);
+
 
 }

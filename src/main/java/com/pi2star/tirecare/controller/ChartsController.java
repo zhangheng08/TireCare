@@ -140,9 +140,9 @@ public class ChartsController {
 
         HashMap<String, ArrayList> map = new HashMap<>();
 
-        map.put("tire", tlist);
-        map.put("gps", glist);
-        map.put("mpu", mlist);
+        map.put("tire", tlist == null ? new ArrayList<TireMessage>() : tlist);
+        map.put("gps", glist == null ? new ArrayList<GPSMessage>() : glist);
+        map.put("mpu", mlist == null ? new ArrayList<MPUMessage>() : mlist);
 
         model.addAttribute("top100", map);
 
@@ -154,7 +154,7 @@ public class ChartsController {
 
         model.addAttribute("selectedTab", idx);
 
-        return "Origin";
+        return "origin";
 
     }
 
@@ -217,6 +217,30 @@ public class ChartsController {
 
         return tireMessage;
 
+    }
+
+    @GetMapping("/ajaxTimeslice")
+    public @ResponseBody HashMap<String, HashMap<Long, Object>> fetchTireMessageWithTimeslice(@RequestParam("from")long timeFrom, @RequestParam("to")int timeTo, @RequestParam("index")int index) {
+
+        HashMap<String, HashMap<Long, Object>> map = new HashMap<>();
+
+        HashMap<Long, Object> innerTireMap = new HashMap<>();
+
+        ArrayList<TireMessage> list = mTireRepository.findBetweenTimeslice(index, timeFrom, timeTo);
+
+        if(list != null) {
+
+            for(TireMessage tm : list) {
+
+                innerTireMap.put(tm.getTimestamp(), tm);
+
+            }
+
+        }
+
+        map.put("tire", innerTireMap);
+
+        return map;
     }
 
 

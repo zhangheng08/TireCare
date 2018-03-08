@@ -184,6 +184,7 @@ body {
 .tab .tabItem {
 
     float: left;
+    width:20%;
     height: 70px;
     padding: 0px;
 
@@ -227,6 +228,7 @@ body {
 
 .tabItem p.n {
 
+    float:left;
     height: 70px;
     width: 100%;
     line-height: 70px;
@@ -256,17 +258,17 @@ body {
 
 .all_charts {
 
-    position: relative;
-    height: 1200px;
+    height: 1300px;
     padding: 0px;
 
 }
 
 .line_charts {
 
-    position: relative;
+    position: absolute;
     top: 0px;
-    height: 1200px;
+    left:0px;
+    height: 1300px;
     padding: 0px;
     z-index: 10;
     background-color: #022431;
@@ -275,9 +277,10 @@ body {
 
 .pie_charts {
 
-    position: relative;
-    top: -1200px;
-    height: 1200px;
+    position: absolute;
+    top: 0px;
+    left:0px;
+    height: 1300px;
     padding: 0px;
     z-index: 9;
     background-color: #022431;
@@ -295,11 +298,31 @@ body {
 .rect_charts {
 
     position: relative;
-    top: -2400px;
+    top: 0px;
+    left:0px;
     height: 1000px;
     padding: 0px;
     z-index: 8;
     background-color: #022431;
+
+}
+
+.history_chart {
+
+    position: absolute;
+    top: 0px;
+    left:0px;
+    height: 1300px;
+    padding: 0px;
+    z-index: 7;
+    background-color: #022431;
+
+}
+
+.picker-con {
+
+    height: 40px;
+    padding: 0px;
 
 }
 
