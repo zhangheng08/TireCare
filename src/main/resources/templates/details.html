@@ -227,6 +227,8 @@
 <script th:inline="javascript">
 
     var map;
+    var markers = [];
+
     initAmap();
 
     var wheels = [ 'lf', 'rf', 'lb', 'rb' ];
@@ -250,7 +252,7 @@
     var place = 0;
     var sIndex = 0;
     var boxId = /*[[${boxId}]]*/-1;
-    var param = {"amap":map, "boxId":88,"dataTime":0, "epochSecond":epochSecond, "place":0, "pContainer":pContainer, "tContainer":tContainer, "aContainer":aContainer, "sContainer":speedLabel};
+    var param = {"amap":map, "mkrs":markers, "boxId":88,"dataTime":0, "epochSecond":epochSecond, "place":0, "pContainer":pContainer, "tContainer":tContainer, "aContainer":aContainer, "sContainer":speedLabel};
 
     initCharts(param);
     healthChart(80);
@@ -336,7 +338,7 @@
             map.addControl(new AMap.ToolBar());
         });*/
 
-        new AMap.CircleMarker({
+        var marker = new AMap.CircleMarker({
             map:map,
             center: [lg, la],
             radius:10,
@@ -350,6 +352,8 @@
             cursor:'pointer',
             clickable: true
         });
+
+        markers.push(marker);
 
     }
 

@@ -490,14 +490,14 @@ function locationUpdate(param) {
         },
         success: function (result) {
 
-            map = new AMap.Map('locationCon', {
-                resizeEnable: true,
-                zoom: 15,
-                center: [result.longitude, result.latitude],
-                mapStyle: 'amap://styles/whitesmoke'
-            });
+            if(result.longitude == -1) return;
 
-            new AMap.CircleMarker({
+            if(param.mkrs.length != 0) {
+                param.amap.remove(param.mkrs);
+                param.mkrs.length = 0;
+            }
+
+            var marker = new AMap.CircleMarker({
                 map:param.amap,
                 center: [result.longitude, result.latitude],
                 radius:10,
@@ -511,6 +511,8 @@ function locationUpdate(param) {
                 cursor:'pointer',
                 clickable: true
             });
+
+            param.mkrs.push(marker);
 
             /*<![CDATA[*/
             param.sContainer.innerHTML = result.speed + "<span style=\"font-size: 13px;\">&nbsp;&nbsp;&nbsp;km/h</span>";

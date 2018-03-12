@@ -98,10 +98,10 @@ public class ChartsController {
 
         if(gpsMessage == null) {
 
-/*            gpsMessage = new GPSMessage();
-            gpsMessage.setSpeed(100 + (int)(Math.random() * 35));*/
+            gpsMessage = new GPSMessage();
+            gpsMessage.setLongitude(-1);
+            gpsMessage.setLatitude(-1);
 
-            System.out.println("null");
 
         } else {
 
