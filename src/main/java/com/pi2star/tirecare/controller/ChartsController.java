@@ -244,4 +244,13 @@ public class ChartsController {
     }
 
 
+/*    @GetMapping("/MPUJson")
+    public @ResponseBody ArrayList<MPUMessage> fectchAllMPU(@RequestParam("date")String utc_year) {
+
+        ArrayList<MPUMessage> list = mMpuRepository.findAllByUtc_time_year(utc_year);
+        return list;
+
+    }*/
+
+
 }

@@ -25,7 +25,8 @@ public interface GPSRepository extends CrudRepository<GPSMessage, Long> {
     @Query(value = "select * from gps_msg where box_id = ?1 and timestamp = ?2", nativeQuery = true)
     public GPSMessage findByBoxIdAndTimestamp(int boxId, long timestamp);
 
-    @Query(value = "select * from gps_msg order by timestamp desc limit 0, 100", nativeQuery = true)
+    //@Query(value = "select * from gps_msg order by timestamp desc limit 0, 10", nativeQuery = true)
+    @Query(value = "select * from gps_msg inner join (select _id from gps_msg order by gps_msg.timestamp desc limit 0, 20) as tab1 using (_id);", nativeQuery = true)
     ArrayList<GPSMessage> findTopGpsMessage();
 
     @Query(value = "select distinct(box_id) from gps_msg", nativeQuery = true)

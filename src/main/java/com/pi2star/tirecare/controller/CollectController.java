@@ -60,7 +60,7 @@ public class CollectController {
     @Autowired
     private BytesInHexRepository bytesInHexRepository;
 
-    @GetMapping("/gpsFakeSave")
+/*    @GetMapping("/gpsFakeSave")
     public @ResponseBody String gpsFakeSave(HttpServletRequest request) {
 
         String ret = "";
@@ -210,7 +210,7 @@ public class CollectController {
 
             }
 
-            /*for(int k = 0; k < 100; k ++) {
+            *//*for(int k = 0; k < 100; k ++) {
 
                 long timestamp = ldt.toEpochSecond(ZoneOffset.of("+8"));
 
@@ -288,11 +288,11 @@ public class CollectController {
 
             //list.parallelStream().forEach(t -> {t.setBoxId(boxId + 1); tirRepository.save(t);});
 
-        }*/
+        }*//*
 
         return "ok";
 
-    }
+    }*/
 
     @PostMapping("/codeTrans")
     public @ResponseBody byte handleUploadData(HttpServletRequest request) {
