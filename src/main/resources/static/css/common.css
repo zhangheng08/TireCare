@@ -15,7 +15,7 @@ div,img,p,a,ul,li {
 
 .sub_header img {
     float: left;
-    height: 35px;
+    width: 35px;
     margin-left: -15px;
 }
 
