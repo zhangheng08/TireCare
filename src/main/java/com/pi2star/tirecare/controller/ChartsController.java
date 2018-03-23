@@ -13,7 +13,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -134,6 +136,38 @@ public class ChartsController {
     @GetMapping("/Origin")
     public String showOrigin(Model model, HttpSession session) {
 
+        String zone = ZoneId.systemDefault().toString();
+        LocalDateTime ldt = LocalDateTime.ofInstant(Instant.now(), ZoneId.of(zone));
+        long timeSec = ldt.toEpochSecond(ZoneOffset.of("Z"));
+
+        Object timspObj = session.getAttribute("timestamp");
+
+        if(null == timspObj) {
+
+            session.setAttribute("timestamp", timeSec);
+
+        } else {
+
+            Long timestp = (Long) timspObj;
+
+            long lastTimeSec = timestp.longValue();
+
+            if(timeSec - lastTimeSec <= 120) {
+
+                session.setAttribute("timestamp", timeSec);
+
+                HashMap<String, ArrayList> map = (HashMap<String, ArrayList>) session.getAttribute("top100");
+                model.addAttribute("top100", map);
+
+                Integer idx = (Integer) session.getAttribute("tab");
+                model.addAttribute("selectedTab", idx);
+
+                return "origin";
+
+            }
+
+        }
+
         ArrayList<TireMessage> tlist = mTireRepository.findTopTireMessage();
         ArrayList<GPSMessage> glist = mGPSRepository.findTopGpsMessage();
         ArrayList<MPUMessage> mlist = mMpuRepository.findTopMpuMessage();
@@ -145,6 +179,7 @@ public class ChartsController {
         map.put("mpu", mlist == null ? new ArrayList<MPUMessage>() : mlist);
 
         model.addAttribute("top100", map);
+        session.setAttribute("top100", map);
 
         Object obj = session.getAttribute("tab");
 
